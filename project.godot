@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Jailbreak"
+config/name="I don't like climbing"
 run/main_scene="uid://yv267dbktknq"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
@@ -33,7 +33,7 @@ enabled=PackedStringArray("res://addons/go_placer/plugin.cfg", "res://addons/net
 
 folder_colors={
 "res://addons/": "gray",
-"res://docs/": "purple"
+"res://Archive/": "purple"
 }
 
 [input]
