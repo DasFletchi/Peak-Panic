@@ -1,4 +1,4 @@
-# GDD – *Peak Panic*
+# GDD – *Jailbreak*
 
 **Spieleranzahl:** 2–6
 
@@ -248,7 +248,7 @@ Item-Platzierung, offene/verschlossene Türen, Hund ja/nein – pro Runde neu ge
 ## 15. Namensvorschläge
 
 1. **Cellmates** – warm, funny, Co-op-Fokus im Namen
-2. **Peak Panic** – Klassiker
+2. **Jailbreak** – Klassiker
 
 
 # [[VISUAL BIBLE]]
