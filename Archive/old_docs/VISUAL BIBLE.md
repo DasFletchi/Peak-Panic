@@ -68,7 +68,7 @@ Charakter friert eine Sekunde ein.
 
 *Maybe Ragdoll/Procedural? weil Bug = funny? (wenn nicht Gamebreaking)*
 
-### NOCH 1 IKONISCHES DING WO MAN INSTANT INSTANT WEISS "ja alr dass is Jailbreak xD"
+### NOCH 1 IKONISCHES DING WO MAN INSTANT INSTANT WEISS "ja alr dass is Peak Panic xD"
 
 ### Licht
 Nicht realistisch.
