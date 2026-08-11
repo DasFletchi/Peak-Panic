@@ -4,15 +4,28 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $Camera3D
 @onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
 @onready var ray_cast_3d: RayCast3D = $RayCast3D
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 
 const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
+const JUMP_VELOCITY = 4.8
+
+# --- Brutal-but-fair gravity (tweak these to taste!) ---
+const GRAVITY_MULT = 1.5          # base gravity multiplier: 9.8 * 1.5 ≈ 14.7 m/s²
+const GRAVITY_ASCEND = 0.8        # while rising -> jump stays fair and tight
+const GRAVITY_DESCEND = 1.6       # while falling -> brutal, heavy falls
+const MAX_FALL_SPEED = 24.0       # terminal velocity -> always fair, you can react
+const COYOTE_TIME = 0.12          # grace window after walking off an edge
+const JUMP_BUFFER = 0.15          # jump pressed a bit early still counts
+
+var coyote_timer := 0.0
+var jump_buffer_timer := 0.0
+var ledges_left := 1
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	#animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
-
+	animation_player.play("RESET")
 
 
 func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nur, wenn niemand anders bisher sich das hier geholt hat dann hol ich es mir halt
@@ -32,13 +45,30 @@ func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nu
 
 
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
+	# --- Gravity: brutal while falling, fair while rising ---
 	if not is_on_floor():
-		velocity += get_gravity() * delta
+		var gravity: Vector3 = get_gravity() * GRAVITY_MULT
+		if velocity.y > 0.0:
+			gravity *= GRAVITY_ASCEND
+		else:
+			gravity *= GRAVITY_DESCEND
+		velocity.y += gravity.y * delta
+		velocity.y = maxf(velocity.y, -MAX_FALL_SPEED)
 
-	# Handle jump.
-	if Input.is_action_just_pressed("space") and is_on_floor():
+	# --- Fairness timers: coyote time + jump buffering ---
+	coyote_timer = COYOTE_TIME if is_on_floor() else maxf(coyote_timer - delta, 0.0)
+	# Holding space mid-air keeps the buffer alive, so the game never eats a jump on landing.
+	if Input.is_action_just_pressed("space") or (Input.is_action_pressed("space") and not is_on_floor()):
+		jump_buffer_timer = JUMP_BUFFER
+	else:
+		jump_buffer_timer = maxf(jump_buffer_timer - delta, 0.0)
+
+	# --- Jump: buffered + coyote -> the game never eats your jump ---
+	if jump_buffer_timer > 0.0 and coyote_timer > 0.0:
 		velocity.y = JUMP_VELOCITY
+		jump_buffer_timer = 0.0
+		coyote_timer = 0.0
+
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -50,17 +80,20 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-	
-	
 	move_and_slide()
+	
+	
+	
+	if is_on_floor():
+		ledges_left = 1
+
+
+	if velocity == Vector3.ZERO:
+		animation_player.play("idle")
+	else:
+		animation_player.play("RESEZ")
 
 func ledge_boost():
-	velocity.y = JUMP_VELOCITY * 2
-
-
-#	if velocity == Vector3.ZERO:
-#		animation_player.play("idle")
-#	else:
-#		animation_player.play("walk")
-
-#	camera.look_at($tempPlayer/MeshInstance3D.global_position)
+	if ledges_left > 0:
+		ledges_left -= 1
+		velocity.y = JUMP_VELOCITY * 1.5

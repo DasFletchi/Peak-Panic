@@ -46,6 +46,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.559684, 0, 7.053362)
 [node name="WL_CROSS5" parent="env" unique_id=333832926 instance=ExtResource("2_op21l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.851365, 0, -4.588993)
 
+[node name="WL_CROSS6" parent="env" unique_id=1912824363 instance=ExtResource("2_op21l")]
+transform = Transform3D(2.63, 0, 0, 0, 2.63, 0, 0, 0, 2.63, 2.6708283, 0, 11.338118)
+
 [node name="WL_WINDOW2" parent="env" unique_id=1612015397 instance=ExtResource("3_b3nqb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.08751, 0, -1.3004456)
 
