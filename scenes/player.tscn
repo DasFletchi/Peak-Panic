@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cv1ril2ejq4e0" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://cqxr6fvowpx4q" path="res://scripts/crosshair.gd" id="3_crosshair"]
+[ext_resource type="PackedScene" uid="uid://cxg4ojnhul1jt" path="res://assets/hands/Hand_003.glb" id="3_qhqgy"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_k7hc8"]
 
@@ -34,3 +35,12 @@ default_color = Color(1, 1, 1, 0.9)
 points = PackedVector2Array(-8, 0, 8, 0)
 width = 2.0
 default_color = Color(1, 1, 1, 0.9)
+
+[node name="hands" type="Node3D" parent="." unique_id=1045537678]
+transform = Transform3D(0.06758405, 0, 0.99771357, 0, 1, 0, -0.99771357, 0, 0.06758405, 0, -0.52237606, 0)
+
+[node name="Sketchfab_Scene" parent="hands" unique_id=958428168 instance=ExtResource("3_qhqgy")]
+transform = Transform3D(-0.0039999997, 0, 1.6479873e-17, -1.5285482e-17, -1.7484553e-10, -0.004, 0, 0.0039999993, -1.7484554e-10, -0.001, 1.6, 0.824)
+
+[node name="Sketchfab_Scene2" parent="hands" unique_id=394199783 instance=ExtResource("3_qhqgy")]
+transform = Transform3D(-0.0039999997, 3.49691e-10, -1.5285485e-17, 0, -1.748455e-10, -0.0040000007, -3.4969108e-10, -0.003999999, 1.7484558e-10, -0.032, 1.6, -0.876)
