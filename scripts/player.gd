@@ -2,11 +2,7 @@ extends CharacterBody3D
 @export var mouse_sensitivity: float = 0.005
 @export var anim_transition_time: float = 0.5
 @onready var camera: Camera3D = $Camera3D
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-
-
-
-
+@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
 
 
 const SPEED = 5.0
@@ -14,7 +10,7 @@ const JUMP_VELOCITY = 4.5
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
+	#animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
 
 
 
@@ -25,14 +21,11 @@ func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nu
 		#it makes sense but it doesnt i guess please just with the rotate x and y thingies its annoying fr
 		#because in this cruel world rotate y means looking left/right we dont have the camera before that bc its fine if the whole player turns that fine its even wanted for nice fps movement
 		#but on the next x = y  and no we dont actually want to change the y rotation of the player then we'd fly thats not so cool
-		# also warum auch immer: 
+		# also warum auch immer: s
 		#Maus X-Bewegung → Rotation um Y-Achse
 		#Maus Y-Bewegung → Rotation um X-Achse
 		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
 		#PI ist anschei9nend immer 180 grad einmal die untere hälfte der blase und die obere hälfte der blase wundewrbar in der mitte auf der x der realen x achse durchgeschnitten (pi lol schneiden)
-
-	if Input.is_action_just_pressed("left_click"):
-		animation_player.play("shoot")
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -56,12 +49,9 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+#	if velocity == Vector3.ZERO:
+#		animation_player.play("idle")
+#	else:
+#		animation_player.play("walk")
 
-	# Don't interrupt the shoot animation with idle/walk
-	if animation_player.current_animation == "shoot" and animation_player.is_playing():
-		return
-	
-	if velocity == Vector3.ZERO:
-		animation_player.play("idle")
-	else:
-		animation_player.play("walk")
+#	camera.look_at($tempPlayer/MeshInstance3D.global_position)

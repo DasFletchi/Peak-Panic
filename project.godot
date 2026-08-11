@@ -32,8 +32,8 @@ enabled=PackedStringArray("res://addons/go_placer/plugin.cfg", "res://addons/net
 [file_customization]
 
 folder_colors={
-"res://addons/": "gray",
-"res://Archive/": "purple"
+"res://Archive/": "purple",
+"res://addons/": "gray"
 }
 
 [input]
