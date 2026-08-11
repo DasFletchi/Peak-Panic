@@ -91,7 +91,7 @@ func _physics_process(delta: float) -> void:
 	if velocity == Vector3.ZERO:
 		animation_player.play("idle")
 	else:
-		animation_player.play("RESEZ")
+		animation_player.play("RESET")
 
 func ledge_boost():
 	if ledges_left > 0:
