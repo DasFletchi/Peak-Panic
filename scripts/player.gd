@@ -3,6 +3,7 @@ extends CharacterBody3D
 @export var anim_transition_time: float = 0.5
 @onready var camera: Camera3D = $Camera3D
 @onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
+@onready var ray_cast_3d: RayCast3D = $RayCast3D
 
 
 const SPEED = 5.0
@@ -26,6 +27,9 @@ func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nu
 		#Maus Y-Bewegung → Rotation um X-Achse
 		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
 		#PI ist anschei9nend immer 180 grad einmal die untere hälfte der blase und die obere hälfte der blase wundewrbar in der mitte auf der x der realen x achse durchgeschnitten (pi lol schneiden)
+	if Input.is_action_just_pressed("left_click") and ray_cast_3d.is_colliding():
+		ledge_boost()
+
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -46,8 +50,13 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-
+	
+	
 	move_and_slide()
+
+func ledge_boost():
+	velocity.y = JUMP_VELOCITY * 2
+
 
 #	if velocity == Vector3.ZERO:
 #		animation_player.play("idle")
