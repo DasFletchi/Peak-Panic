@@ -9,7 +9,7 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_k7hc8"]
 
 [sub_resource type="Animation" id="Animation_dqkch"]
-length = 0.001
+length = 1.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -87,10 +87,51 @@ tracks/2/keys = {
 "values": [Vector3(0.108210415, 0.0017453292, -3.1415927), Vector3(0.24085544, 0.0017453292, -3.1415927), Vector3(0.108210415, 0.0017453292, -3.1415927)]
 }
 
+[sub_resource type="Animation" id="Animation_qlg0r"]
+resource_name = "ledge"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("hands:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.13, 0.22, 0.28, 0.36, 0.45, 0.5),
+"transitions": PackedFloat32Array(1, 1.4, 1.7, 1, 0.5, 0.25, 1.5, 1),
+"update": 0,
+"values": [Vector3(0, -0.4012242, 0), Vector3(0, -0.15, -0.18), Vector3(0, 0.45, -0.65), Vector3(0, 0.78, -1.25), Vector3(0, 0.72, -1.35), Vector3(0, 0.15, -1.35), Vector3(0, -0.65, -1.35), Vector3(0, -0.82, -1.35)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("hands/Sketchfab_Scene:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.13, 0.22, 0.28, 0.36, 0.45, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-1.5707964, 1.6703743e-22, 0), Vector3(-1.1, -0.45, -1), Vector3(-0.5, -0.95, -2.1), Vector3(0, -1.5079645, -3.1415927), Vector3(0, -1.5079645, -3.1415927), Vector3(0, -1.5079645, -3.1415927), Vector3(0, -1.5079645, -3.1415927), Vector3(0, -1.5079645, -3.1415927)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("hands/Sketchfab_Scene2:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.13, 0.22, 0.28, 0.36, 0.45, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(1.5707964, 0.0017453292, -3.1415927), Vector3(1.1, 0.45, -2), Vector3(0.5, 1.05, -0.9), Vector3(0, 1.72264, 0), Vector3(0, 1.72264, 0), Vector3(0, 1.72264, 0), Vector3(0, 1.72264, 0), Vector3(0, 1.72264, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dqkch"]
 _data = {
 &"RESET": SubResource("Animation_dqkch"),
-&"idle": SubResource("Animation_qhqgy")
+&"idle": SubResource("Animation_qhqgy"),
+&"ledge": SubResource("Animation_qlg0r")
 }
 
 [node name="tempPlayer" type="CharacterBody3D" unique_id=1070925469]
@@ -125,10 +166,10 @@ default_color = Color(1, 1, 1, 0.9)
 transform = Transform3D(0.06758405, 0, 0.99771357, 0, 1, 0, -0.99771357, 0, 0.06758405, 0, -0.4012242, 0)
 
 [node name="Sketchfab_Scene" parent="hands" unique_id=958428168 instance=ExtResource("3_qhqgy")]
-transform = Transform3D(-0.0039999993, 6.6814946e-25, 2.920575e-32, 0, 1.7484549e-10, -0.0039999997, 6.681496e-25, 0.0039999983, 1.7484554e-10, -0.001, 1.6, 0.824)
+transform = Transform3D(-0.003999995, 6.6814867e-25, 2.9205733e-32, 0, 1.7484528e-10, -0.0039999974, 6.681489e-25, 0.0039999937, 1.7484544e-10, 0.010049485, 1.5999999, 0.9871196)
 
 [node name="Sketchfab_Scene2" parent="hands" unique_id=394199783 instance=ExtResource("3_qhqgy")]
-transform = Transform3D(-0.0039999946, -6.981661e-06, -3.0516288e-13, -1.5285485e-17, 1.748455e-10, -0.0039999997, 6.9816642e-06, -0.0039999927, -1.7484528e-10, -0.032000005, 1.6, -0.876)
+transform = Transform3D(-0.0039999946, -6.9816615e-06, -3.0516288e-13, -1.5285485e-17, 1.7484553e-10, -0.0039999997, 6.9816642e-06, -0.003999993, -1.7484528e-10, -0.032000065, 1.5999999, -0.876)
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1116689074]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.75, 0)
@@ -136,3 +177,6 @@ target_position = Vector3(0, -2, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2050154353]
 libraries/ = SubResource("AnimationLibrary_dqkch")
+
+[node name="vorne" type="Marker3D" parent="." unique_id=1387996048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
