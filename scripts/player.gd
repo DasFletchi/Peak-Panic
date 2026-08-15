@@ -21,10 +21,12 @@ const JUMP_BUFFER = 0.15          # jump pressed a bit early still counts
 var coyote_timer := 0.0
 var jump_buffer_timer := 0.0
 var ledges_left := 1
+var legding_rn = false
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	#animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
+	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("RESET")
 
 
@@ -88,7 +90,9 @@ func _physics_process(delta: float) -> void:
 		ledges_left = 1
 
 
-	if velocity == Vector3.ZERO:
+	if legding_rn:
+		animation_player.play("ledge")
+	elif velocity == Vector3.ZERO:
 		animation_player.play("idle")
 	else:
 		animation_player.play("RESET")
@@ -97,3 +101,9 @@ func ledge_boost():
 	if ledges_left > 0:
 		ledges_left -= 1
 		velocity.y = JUMP_VELOCITY * 1.5
+		legding_rn = true
+
+
+func _on_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "ledge":
+		legding_rn = false
