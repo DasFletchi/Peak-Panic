@@ -134,6 +134,17 @@ _data = {
 &"ledge": SubResource("Animation_qlg0r")
 }
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qhqgy"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("AnimationPlayer:current_animation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="tempPlayer" type="CharacterBody3D" unique_id=1070925469]
 script = ExtResource("1_3vyb7")
 
@@ -180,3 +191,6 @@ libraries/ = SubResource("AnimationLibrary_dqkch")
 
 [node name="vorne" type="Marker3D" parent="." unique_id=1387996048]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1895323557]
+replication_config = SubResource("SceneReplicationConfig_qhqgy")

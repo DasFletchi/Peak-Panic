@@ -13,3 +13,4 @@ func _on_multiplayer_button_pressed() -> void:
 	print("multiplayer button pressed")
 	_2_nd_screen_multiplayer.show()
 	_1_st_container.hide()
+	get_tree().change_scene_to_file("res://scenes/testMain.tscn")
