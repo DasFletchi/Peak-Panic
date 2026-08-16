@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://b0350gi31rkk4" path="res://scripts/main.gd" id="1_nllki"]
 [ext_resource type="PackedScene" uid="uid://61b4bctuy3yq" path="res://assets/Modular Blueprint Kit/glTF/WL_CROSS.gltf" id="2_op21l"]
 [ext_resource type="PackedScene" uid="uid://wxauruiuc8qd" path="res://assets/Modular Blueprint Kit/glTF/WL_WINDOW.gltf" id="3_b3nqb"]
-[ext_resource type="PackedScene" uid="uid://dranyd23io7tw" path="res://scenes/player.tscn" id="4_ikeim"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sgp6g"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -55,9 +54,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.08751, 0, -1.3004456)
 [node name="WL_WINDOW3" parent="env" unique_id=1153921192 instance=ExtResource("3_b3nqb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1991777, 0, -0.81898403)
 
-[node name="Player" parent="." unique_id=1070925469 instance=ExtResource("4_ikeim")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0074577, 0)
-
 [node name="Mutliplayer temp menu" type="CanvasLayer" parent="." unique_id=1576663919]
 
 [node name="tempMPMenu" type="PanelContainer" parent="Mutliplayer temp menu" unique_id=1535822173]
@@ -87,6 +83,10 @@ text = "Join 	"
 layout_mode = 2
 placeholder_text = "Enter Addres to join"
 alignment = 1
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1430016727]
+_spawnable_scenes = PackedStringArray("uid://dranyd23io7tw")
+spawn_path = NodePath("..")
 
 [connection signal="pressed" from="Mutliplayer temp menu/tempMPMenu/VBoxContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Mutliplayer temp menu/tempMPMenu/VBoxContainer/Join" to="." method="_on_join_pressed"]

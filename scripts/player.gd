@@ -24,13 +24,17 @@ var ledges_left := 1
 var legding_rn = false
 
 func _ready() -> void:
+	if not is_multiplayer_authority(): return
 	#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	#animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
 	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("RESET")
+	camera.make_current()# der code wird eh nicht ausgefüll wenn wir nicht big server authority haben
+
 
 
 func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nur, wenn niemand anders bisher sich das hier geholt hat dann hol ich es mir halt
+	if not is_multiplayer_authority(): return
 	if event is InputEventMouseMotion: #ohne input map auf shit zugreifen/is dieses event eine a
 		rotate_y(-event.relative.x * mouse_sensitivity) #event.relative.x ist: Wie weit die Maus seit dem letzten Frame horizontal bewegt wurde.
 		camera.rotate_x(-event.relative.y * mouse_sensitivity)
@@ -47,6 +51,8 @@ func _unhandled_input(event: InputEvent) -> void: #unhandled inputs heist eif nu
 
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority(): return
+
 	# --- Gravity: brutal while falling, fair while rising ---
 	if not is_on_floor():
 		var gravity: Vector3 = get_gravity() * GRAVITY_MULT
@@ -107,3 +113,7 @@ func ledge_boost():
 func _on_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "ledge":
 		legding_rn = false
+
+
+func _enter_tree() -> void: #Diese Funktion wird ganz früh aufgerufen, noch bevor die Node komplett in der Szene geladen ist (also vor _ready). Das ist wichtig, damit die "Machtverhältnisse" geklärt sind, bevor das Spiel richtig losgeht.
+	set_multiplayer_authority(str(name).to_int()) #grabbt sich den namen von der node die wir als peer id gesetzt haben und macht zu int damit er es essen kann und der node authority geben kann
