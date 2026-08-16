@@ -23,7 +23,7 @@ func _on_host_pressed() -> void:
 	add_player(multiplayer.get_unique_id())
 	
 	multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
-
+	multiplayer.peer_disconnected.connect(remove_player) #wir connecten das zur funktion remove player
 
 
 func _on_join_pressed() -> void:
@@ -36,3 +36,9 @@ func add_player(peer_id): #soll ne peer id mitnehmen, peer id brauch man zum ein
 	var player = tempPlayerScene.instantiate()
 	player.name = str(peer_id)
 	add_child(player) #verwirrend weil der var name hier temp player ist aber mit dem instanciaten laden wir das rein und die player node heist ja an sich player und das ist das was wir dareinpassenmüssen
+
+
+func remove_player(peer_id):
+	var player = get_node_or_null(str(peer_id))
+	if player:
+		queue_free()
