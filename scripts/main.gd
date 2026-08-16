@@ -20,10 +20,17 @@ func _on_host_pressed() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	enet_peer.create_server(PORT) # erstellt einen ENet-Server auf diesem Port. host client modell hier
 	multiplayer.multiplayer_peer = enet_peer
+	add_player(multiplayer.get_unique_id())
+	
+	multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
+
 
 
 func _on_join_pressed() -> void:
-	pass
+	temp_mp_menu.hide()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	enet_peer.create_client("localhost", PORT) #das ist erstmal die ip whohin wir uns verbinden sollen, wir sind hier local also ist das fine
+	multiplayer.multiplayer_peer = enet_peer
 
 func add_player(peer_id): #soll ne peer id mitnehmen, peer id brauch man zum einen für authority purposes
 	var player = tempPlayerScene.instantiate()
