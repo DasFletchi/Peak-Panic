@@ -18,13 +18,13 @@ const MAX_FALL_SPEED = 24.0       # terminal velocity -> always fair, you can re
 const COYOTE_TIME = 0.12          # grace window after walking off an edge
 const JUMP_BUFFER = 0.15          # jump pressed a bit early still counts
 
-var coyote_timer := 0.0
+var coyote_timer := 0.0 #das zeit dem program das es sich hier um ne float handelt mit dem =:
 var jump_buffer_timer := 0.0
 var ledges_left := 1
 var legding_rn = false
 
 func _ready() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	#animation_player.playback_default_blend_time = anim_transition_time #geiles godot feature damit man nicht so snappy von animation zu animation wechselts
 	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("RESET")

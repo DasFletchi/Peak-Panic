@@ -59,7 +59,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1991777, 0, -0.81898403)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0074577, 0)
 
 [node name="Mutliplayer temp menu" type="CanvasLayer" parent="." unique_id=1576663919]
-visible = false
 
 [node name="tempMPMenu" type="PanelContainer" parent="Mutliplayer temp menu" unique_id=1535822173]
 anchors_preset = 15

@@ -12,24 +12,20 @@ var enet_peer = ENetMultiplayerPeer.new() #erstellt ein multiplayer peer element
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("quit"):
 		get_tree().quit()
+		add_player(multiplayer.get_unique_id()) #das unique id ding generiert dann eben diese peeer id und packt sie dann direkt mit rein, weil wir ja unten gesgat haben wir wollen die peer id haben könnte man das glaube ich nicht einfach so dahinschreiben
 
 
 func _on_host_pressed() -> void:
 	temp_mp_menu.hide()
-	
-	enet_peer.create_server(PORT) # erstellt einen ENet-Server auf diesem Port.
-	# Dieser Spieler wird dadurch zum Host.
-	# In einem Host-Client-P2P-System ist jeder grundsätzlich ein Peer,
-	# aber der Host ist der besondere Peer, der den Server betreibt
-	# und normalerweise die Autorität über den Spielzustand hat.
-	# Seine Peer-ID ist meistens 1.
-	# ja kein echtes true decentrilaized p2p aber fick mich ich nem nur das was ez in der high level scheisse drin ist nein danke. (ander e wäre highkey eh einfach nur ein sumppf gewesen (bruh ich habe einen 90m minütigen exkurs betrieben dafür alr?)
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	enet_peer.create_server(PORT) # erstellt einen ENet-Server auf diesem Port. host client modell hier
 	multiplayer.multiplayer_peer = enet_peer
 
 
 func _on_join_pressed() -> void:
 	pass
 
-func add_player(peer_id):
+func add_player(peer_id): #soll ne peer id mitnehmen, peer id brauch man zum einen für authority purposes
 	var player = tempPlayerScene.instantiate()
 	player.name = str(peer_id)
+	add_child(player) #verwirrend weil der var name hier temp player ist aber mit dem instanciaten laden wir das rein und die player node heist ja an sich player und das ist das was wir dareinpassenmüssen
