@@ -8,6 +8,9 @@ const tempPlayerScene = preload("res://scenes/player.tscn")
 const PORT = 9999 #lol
 var enet_peer = ENetMultiplayerPeer.new() #erstellt ein multiplayer peer element und gibt einen zeiger drauf bevor es ohne die var in den abyss verschwindet
 
+const NORAY_HOST = "tomfol.io"
+const NORAY_PORT = 8890
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("quit"):
