@@ -34,11 +34,14 @@ func _on_host_pressed() -> void:
 	#add_player(multiplayer.get_unique_id())
 	#multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
 	#multiplayer.peer_disconnected.connect(remove_player) #wir connecten das zur funktion remove player
-	await Noray.register_host() #register as host (still we have time so we await
+	await Noray.register_host() #register as host (still we have time so we await)  "Hey Noray, ich bin der Host" → kriegst OID
 	print("MY OID: ", Noray.oid) #print the OID (the ID that the user can paste into the line edit to join Noray.oid contains the oid
 	
+	await Noray.register_remote() #"Und falls jemand mit meiner OID joinen will, schick ihm diesen Port"
+	print("MY OWN PORT: ", Noray.local_port) #und dies in die konsole auspucken
 	
-
+	enet_peer.create_server(Noray.local_port) #noray will sich lieber selber einen port aussuchen wir müssen das da reinpassen, weil er brauch die information einfach er kann sie sich nicht selber holen also stecken wir sie ihm ins maul zwischen den klammern
+	multiplayer.multiplayer_peer = enet_peer #"Godot, benutze dieses Telefon für alles was Multiplayer ist" (oben ja festgelegt
 
 
 func _on_join_pressed() -> void:
