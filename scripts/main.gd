@@ -12,6 +12,13 @@ const NORAY_HOST = "tomfol.io"
 const NORAY_PORT = 8890
 
 
+func _ready() -> void:
+	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT)
+	print ("yay mit noray relay verbunden :D")
+
+
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("quit"):
 		get_tree().quit()
