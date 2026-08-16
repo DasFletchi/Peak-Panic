@@ -13,7 +13,7 @@ const NORAY_PORT = 8890
 
 
 func _ready() -> void:
-	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT)
+	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT) # await heist "warte hier und geh erst weider wenn das nach dir fertig ist"
 	print ("yay mit noray relay verbunden :D")
 
 
@@ -28,12 +28,17 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_host_pressed() -> void:
 	temp_mp_menu.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	enet_peer.create_server(PORT) # erstellt einen ENet-Server auf diesem Port. host client modell hier
-	multiplayer.multiplayer_peer = enet_peer
-	add_player(multiplayer.get_unique_id())
+	#OLD NETWORKING CODE
+	#enet_peer.create_server(PORT) # erstellt einen ENet-Server auf diesem Port. host client modell hier
+	#multiplayer.multiplayer_peer = enet_peer
+	#add_player(multiplayer.get_unique_id())
+	#multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
+	#multiplayer.peer_disconnected.connect(remove_player) #wir connecten das zur funktion remove player
+	await Noray.register_host() #register as host (still we have time so we await
+	print("MY OID: ", Noray.oid) #print the OID (the ID that the user can paste into the line edit to join Noray.oid contains the oid
 	
-	multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
-	multiplayer.peer_disconnected.connect(remove_player) #wir connecten das zur funktion remove player
+	
+
 
 
 func _on_join_pressed() -> void:
