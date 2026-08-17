@@ -27,17 +27,17 @@ text = "Singleplayer"
 layout_mode = 2
 text = "Multiplayer"
 
-[node name="2nd Screen Multiplayer" type="Node2D" parent="." unique_id=1213294067]
+[node name="2nd Screen Multiplayer (NOT USED IN testMAIN)" type="Node2D" parent="." unique_id=1213294067]
 visible = false
 
-[node name="HOST" type="Button" parent="2nd Screen Multiplayer" unique_id=776052761]
+[node name="HOST" type="Button" parent="2nd Screen Multiplayer (NOT USED IN testMAIN)" unique_id=776052761]
 offset_left = 390.0
 offset_top = 295.0
 offset_right = 562.0
 offset_bottom = 326.0
 text = "HOST"
 
-[node name="JOIN" type="Button" parent="2nd Screen Multiplayer" unique_id=208814499]
+[node name="JOIN" type="Button" parent="2nd Screen Multiplayer (NOT USED IN testMAIN)" unique_id=208814499]
 offset_left = 570.0
 offset_top = 295.0
 offset_right = 748.0
