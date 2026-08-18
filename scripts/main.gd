@@ -33,39 +33,46 @@ func _on_host_pressed() -> void:
 	#add_player(multiplayer.get_unique_id())
 	#multiplayer.peer_connected.connect(add_player) #wenn sich jemand connected soll der einen player kriegenssss
 	#multiplayer.peer_disconnected.connect(remove_player) #wir connecten das zur funktion remove player
-	await Noray.register_host() #register as host (still we have time so we await)  "Hey Noray, ich bin der Host" → kriegst OID
+	Noray.register_host() # Sagt Noray: "Gib mir eine öffentliche ID und eine private ID."
+	await Noray.on_pid # Wartet, bis Noray wirklich geantwortet hat; erst danach darf register_remote() laufen.
 	print("MY OID: ", Noray.oid) #print the OID (the ID that the user can paste into the line edit to join Noray.oid contains the oid
-	
+
 	await Noray.register_remote() #"Und falls jemand mit meiner OID joinen will, schick ihm diesen Port"
 	print("MY OWN PORT: ", Noray.local_port) #und dies in die konsole auspucken
-	
+
 	enet_peer.create_server(Noray.local_port) #noray will sich lieber selber einen port aussuchen wir müssen das da reinpassen, weil er brauch die information einfach er kann sie sich nicht selber holen also stecken wir sie ihm ins maul zwischen den klammern
 	multiplayer.multiplayer_peer = enet_peer #"Godot, benutze dieses Telefon für alles was Multiplayer ist" (oben ja festgelegt
-	
+
 	Noray.on_connect_nat.connect(nat_connect) # "Noray, wenn jemand per direkter Verbindung kommt, ruf _jemand_kommt_direkt auf"
 	Noray.on_connect_relay.connect(relay_connect) # "Noray, wenn jemand per Relay kommt, ruf _jemand_kommt_per_relay auf"
-	
+
 	add_player(multiplayer.get_unique_id())
 	multiplayer.peer_connected.connect(add_player) #ich sags nochmal multiplayer.peer_connected ist nur ein signal (hier halt in code) und wenn das abefeuert connecten wir mit .connect halt 'add_player'
 	multiplayer.peer_disconnected.connect(remove_player)
-	
-	
-	
+
+
+
 
 func _on_join_pressed() -> void:
+	var host_oid = adress_entry.text.strip_edges() # Holt die eingegebene Host-OID und entfernt versehentliche Leerzeichen vorne/hinten.
+	if host_oid.is_empty(): # Wenn gar nichts eingegeben wurde, soll Join nicht starten.
+		push_error("Bitte erst die OID vom Host eingeben.") # Zeigt im Debugger eine klare Fehlermeldung statt später komisch zu crashen.
+		return # Bricht Join hier ab, weil ohne OID kein Host gefunden werden kann.
+
 	temp_mp_menu.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
+
+	Noray.register_host() # Auch der Client braucht erst eigene Noray-IDs, damit Noray seinen Port registrieren kann.
+	await Noray.on_pid # Wartet auf diese IDs; ohne das wäre register_remote() zu früh.
 	await Noray.register_remote() #ich sags nochmal await macht das wir so lange bei der funktion bleiben bis wir eine bestätigung haben das sie durch ist
-	
+
 	Noray.on_connect_nat.connect(join) #probiert zuerst nat weil wenn geht besser weil wir keinen umweg haben wenn nicht dann isses so und dann müsssen wir relay hallo sagen
 	Noray.on_connect_relay.connect(join)
-	
-	var host_oid = adress_entry.text
-	await Noray.connect_nat(host_oid)
-	
-	
-	
+
+	Noray.connect_nat(host_oid) # Fragt Noray: "Verbinde mich mit dem Host, der diese OID hat."
+
+
+
 	#enet_peer.create_client("localhost", PORT) #das ist erstmal die ip whohin wir uns verbinden sollen, wir sind hier local also ist das fine
 	#multiplayer.multiplayer_peer = enet_peer
 
@@ -79,7 +86,7 @@ func nat_connect(address: String, port: int) -> void:
 	await PacketHandshake.over_enet_peer(enet_peer, address, port)
 	#Handshake heist das wir einfach sicher stellen das hier bei NAT punchtrhough wirklich sicherstellen das beide router offen sind indem wir uns beide diese sachen austauschen,  und das in der klammer ist die adresse wohin wir das schicken sollen. Handshae ist automatisch da muss man nichts machen.
 	print("Jemand kommt per NAT (direkt): ", address, ":", port)
-	
+
 
 func relay_connect(address: String, port: int) -> void:
 	await PacketHandshake.over_enet_peer(enet_peer, address, port)
