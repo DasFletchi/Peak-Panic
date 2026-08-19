@@ -10,10 +10,13 @@ var enet_peer = ENetMultiplayerPeer.new() #erstellt ein multiplayer peer element
 const NORAY_HOST = "tomfol.io"
 const NORAY_PORT = 8890
 
+var rng = RandomNumberGenerator.new()
+
+var seed_value := 0
 
 func _ready() -> void:
 	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT) # await heist "warte hier und geh erst weider wenn das nach dir fertig ist"
-	print ("yay mit noray relay verbunden :D")
+	print ("connected to relay")
 
 
 
@@ -50,13 +53,14 @@ func _on_host_pressed() -> void:
 	multiplayer.peer_connected.connect(add_player) #ich sags nochmal multiplayer.peer_connected ist nur ein signal (hier halt in code) und wenn das abefeuert connecten wir mit .connect halt 'add_player'
 	multiplayer.peer_disconnected.connect(remove_player)
 
+	makes_random_number_and_sends()
 
-
+	print("My seed is (host): ", rng.seed)
 
 func _on_join_pressed() -> void:
 	var host_oid = adress_entry.text.strip_edges() # Holt die eingegebene Host-OID und entfernt versehentliche Leerzeichen vorne/hinten.
 	if host_oid.is_empty(): # Wenn gar nichts eingegeben wurde, soll Join nicht starten.
-		push_error("Bitte erst die OID vom Host eingeben.") # Zeigt im Debugger eine klare Fehlermeldung statt später komisch zu crashen.
+		push_error("Please first insert ur OID") # Zeigt im Debugger eine klare Fehlermeldung statt später komisch zu crashen.
 		return # Bricht Join hier ab, weil ohne OID kein Host gefunden werden kann.
 
 	temp_mp_menu.hide()
@@ -68,10 +72,8 @@ func _on_join_pressed() -> void:
 
 	Noray.on_connect_nat.connect(join) #probiert zuerst nat weil wenn geht besser weil wir keinen umweg haben wenn nicht dann isses so und dann müsssen wir relay hallo sagen
 	Noray.on_connect_relay.connect(join)
-
+ 
 	Noray.connect_nat(host_oid) # Fragt Noray: "Verbinde mich mit dem Host, der diese OID hat."
-
-
 
 	#enet_peer.create_client("localhost", PORT) #das ist erstmal die ip whohin wir uns verbinden sollen, wir sind hier local also ist das fine
 	#multiplayer.multiplayer_peer = enet_peer
@@ -85,13 +87,13 @@ func join(address: String, port: int) -> void: #ich nehme an das wir hier weil d
 func nat_connect(address: String, port: int) -> void:
 	await PacketHandshake.over_enet_peer(enet_peer, address, port)
 	#Handshake heist das wir einfach sicher stellen das hier bei NAT punchtrhough wirklich sicherstellen das beide router offen sind indem wir uns beide diese sachen austauschen,  und das in der klammer ist die adresse wohin wir das schicken sollen. Handshae ist automatisch da muss man nichts machen.
-	print("Jemand kommt per NAT (direkt): ", address, ":", port)
+	print("Someone joins throught NAT (direct): ", address, ":", port)
 
 
 func relay_connect(address: String, port: int) -> void:
 	await PacketHandshake.over_enet_peer(enet_peer, address, port)
 	# Gleich wie direkt, nur läuft's durch Noray's Server (automatisch)
-	print("Jemand kommt per Relay (durch Noray): ", address, ":", port)
+	print("Someones joining through a relay: ", address, ":", port)
 
 func add_player(peer_id): #soll ne peer id mitnehmen, peer id brauch man zum einen für authority purposes
 	var player = tempPlayerScene.instantiate()
@@ -103,3 +105,21 @@ func remove_player(peer_id):
 	var player = get_node_or_null(str(peer_id))
 	if player:
 		player.queue_free() #NICHT VERGESSEN
+
+
+
+func makes_random_number_and_sends():
+	if multiplayer.is_server():
+		rng.seed = randi() % 100 #makes a random number between 0-100
+		seed_value = rng.seed #nur für uns lopkal da wir ja beim @rpc darunter gesagt haben wir schicken uns nicht selber
+		receive_seed.rpc(seed_value) #SO, SCHNUCKIS/ALLE ANDEREN PEERS: IHR FÜHRT JETZT receive_seed(seed_value) AUS.
+
+
+@rpc("authority", "call_remote", "reliable") #authority = who may send this rpc, call_remote means im not sending that shi to myself if im the host and reliable means we using TCP so we dont get packet loss and the seed arrives with a 100% chance
+func receive_seed(seed_value):
+	rng.seed = seed_value
+	print("My seed is (joiner): ", rng.seed)
+
+func _on_peer_connected(peer_id: int):
+	if multiplayer.is_server(): 
+		receive_seed.rpc_id(peer_id, seed_value) #same as at the top just witht he rpc id between that so we only send it TO THAT RPC ID
