@@ -1,12 +1,32 @@
 [gd_scene format=3 uid="uid://coytn6758h15y"]
 
-[ext_resource type="Script" uid="uid://equx3nk22qjt" path="res://scripts/moving_object#1.gd" id="1_prmx7"]
+[sub_resource type="GDScript" id="GDScript_yfgkt"]
+script/source = "extends AnimatableBody3D
+
+@export var destination: Vector3
+@export var duration: float = 1.0
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var tween = create_tween()
+	tween.set_loops()
+	tween.set_trans(Tween.TRANS_SINE)
+	tween.tween_property(self, \"global_position\", global_position + destination, duration)
+	tween.tween_property(self, \"global_position\", global_position, duration)
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [node name="CSGBox3D" type="CSGBox3D" unique_id=187573865]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8883204, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.343064, 0, 0)
 use_collision = true
 size = Vector3(3, 1, 3)
-script = ExtResource("1_prmx7")
+script = SubResource("GDScript_yfgkt")
+destination = null
+duration = null
 
 [node name="Marker3D" type="Marker3D" parent="." unique_id=597344197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8883185, 0, 0)
