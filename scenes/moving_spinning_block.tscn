@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://sit562i22d73"]
+[gd_scene format=3 uid="uid://bqndtmbe42vyi"]
 
-[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_26jr0"]
+[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_8s8hj"]
 
 [sub_resource type="Animation" id="Animation_o3ep8"]
 length = 0.001
@@ -35,7 +35,7 @@ length = 4.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
-tracks/0/enabled = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("CSGBox3D:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
@@ -66,7 +66,7 @@ _data = {
 
 [node name="Moving thingy" type="Node3D" unique_id=2040750926]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
-script = ExtResource("1_26jr0")
+script = ExtResource("1_8s8hj")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=569271759]
 use_collision = true
