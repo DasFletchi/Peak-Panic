@@ -28,6 +28,14 @@ var plattform
 
 @export var plattform_amount: int  = 50
 
+@export var max_x = 50
+@export var max_y = 50
+@export var max_z = 50
+
+@export var min_x = 0
+@export var min_y = -5
+@export var min_z = 0
+
 
 func _ready() -> void:
 	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT) # await heist "warte hier und geh erst weider wenn das nach dir fertig ist"
@@ -145,9 +153,9 @@ func _on_peer_connected(peer_id: int):
 
 # == HILL GENERATING ==
 func generate_plattform():
-	var x = rng.randi_range(0, 100)
-	var y = rng.randi_range(0, 100)
-	var z = rng.randi_range(0, 100)
+	var x = rng.randi_range(min_x, max_x)
+	var y = rng.randi_range(min_y, max_y)
+	var z = rng.randi_range(min_z, max_z)
 
 	var chosen_plattform = rng.randi_range(1, number_of_plattforms_in_the_script)
 
