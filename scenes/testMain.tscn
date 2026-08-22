@@ -88,5 +88,10 @@ alignment = 1
 _spawnable_scenes = PackedStringArray("uid://dranyd23io7tw")
 spawn_path = NodePath("..")
 
+[node name="MultiplayerPlattformSpawner" type="MultiplayerSpawner" parent="." unique_id=1052918489]
+spawn_path = NodePath("../PlattformSpawnerManager")
+
+[node name="PlattformSpawnerManager" type="Node" parent="." unique_id=841895833]
+
 [connection signal="pressed" from="Mutliplayer temp menu/tempMPMenu/VBoxContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Mutliplayer temp menu/tempMPMenu/VBoxContainer/Join" to="." method="_on_join_pressed"]

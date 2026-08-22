@@ -14,6 +14,21 @@ var rng = RandomNumberGenerator.new()
 
 var seed_value := 0
 
+var spinning_block = preload("res://scenes/spinning_block.tscn")
+var moving_spinning_block = preload("res://scenes/moving_spinning_block.tscn")
+var moving_block = preload("res://scenes/moving_block.tscn")
+
+@export var number_of_plattforms_in_the_script = 3
+
+@onready var plattform_spawner_manager: Node = $PlattformSpawnerManager
+
+
+var plattform
+
+
+@export var plattform_amount: int  = 50
+
+
 func _ready() -> void:
 	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT) # await heist "warte hier und geh erst weider wenn das nach dir fertig ist"
 	print ("connected to relay")
@@ -56,6 +71,9 @@ func _on_host_pressed() -> void:
 	makes_random_number_and_sends()
 
 	print("My seed is (host): ", rng.seed)
+
+	spawn_plattforms()
+	print("spawn_plattforms() is called")
 
 func _on_join_pressed() -> void:
 	var host_oid = adress_entry.text.strip_edges() # Holt die eingegebene Host-OID und entfernt versehentliche Leerzeichen vorne/hinten.
@@ -123,3 +141,33 @@ func receive_seed(seed_value):
 func _on_peer_connected(peer_id: int):
 	if multiplayer.is_server(): 
 		receive_seed.rpc_id(peer_id, seed_value) #same as at the top just witht he rpc id between that so we only send it TO THAT RPC ID
+
+
+# == HILL GENERATING ==
+func generate_plattform():
+	var x = rng.randi_range(0, 100)
+	var y = rng.randi_range(0, 100)
+	var z = rng.randi_range(0, 100)
+
+	var chosen_plattform = rng.randi_range(1, number_of_plattforms_in_the_script)
+
+	var plattform_scene
+	
+	if chosen_plattform == 1:
+		plattform_scene = spinning_block.instantiate()
+	elif chosen_plattform == 2:
+		plattform_scene = moving_block.instantiate()
+	elif chosen_plattform == 3:
+		plattform_scene = moving_spinning_block.instantiate()
+
+
+	plattform_spawner_manager.add_child(plattform_scene)
+	plattform_scene.position = Vector3(x, y, z)
+
+
+func spawn_plattforms():
+	if plattform_amount > 0:
+		generate_plattform()
+		plattform_amount -= 1
+		print("generate_plattform() called plattform_amount -1. Left: ", plattform_amount)
+		spawn_plattforms()
