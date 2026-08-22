@@ -19,7 +19,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_ttdag"]
 resource_name = "spin"
-length = 4.0
+length = 16.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
