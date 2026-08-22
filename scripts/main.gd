@@ -161,6 +161,7 @@ func generate_plattform():
 		plattform_scene = moving_spinning_block.instantiate()
 
 	plattform_scene.position = Vector3(x, y, z)
+	plattform_scene.name = "Platform_" + str(plattform_amount)
 	plattform_spawner_manager.add_child(plattform_scene)
 
 
