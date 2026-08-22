@@ -160,9 +160,9 @@ func generate_plattform():
 	elif chosen_plattform == 3:
 		plattform_scene = moving_spinning_block.instantiate()
 
-
-	plattform_spawner_manager.add_child(plattform_scene)
 	plattform_scene.position = Vector3(x, y, z)
+	plattform_spawner_manager.add_child(plattform_scene)
+
 
 
 func spawn_plattforms():
