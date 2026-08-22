@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 func ledge_boost():
 	if ledges_left > 0:
 		ledges_left -= 1
-		velocity.y = JUMP_VELOCITY * 1.5
+		velocity.y = JUMP_VELOCITY * 2
 		legding_rn = true
 
 

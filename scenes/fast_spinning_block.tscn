@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bqndtmbe42vyi"]
+[gd_scene format=3 uid="uid://c6afmbkuge0hf"]
 
-[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_8s8hj"]
+[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_o3ep8"]
 
 [sub_resource type="Animation" id="Animation_o3ep8"]
 length = 0.001
@@ -16,22 +16,10 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0)]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CSGBox3D:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
 
 [sub_resource type="Animation" id="Animation_ttdag"]
 resource_name = "spin"
-length = 16.0
+length = 2.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -40,22 +28,10 @@ tracks/0/path = NodePath("CSGBox3D:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 4),
+"times": PackedFloat32Array(0, 2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 3.1415927, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CSGBox3D:position")
-tracks/1/interp = 2
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 2, 4),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(5, 0, 0), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_o3ep8"]
@@ -64,7 +40,7 @@ _data = {
 &"spin": SubResource("Animation_ttdag")
 }
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8s8hj"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_o3ep8"]
 properties/0/path = NodePath("CSGBox3D:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
@@ -75,9 +51,9 @@ properties/2/path = NodePath(".:position")
 properties/2/spawn = true
 properties/2/replication_mode = 0
 
-[node name="Moving thingy" type="Node3D" unique_id=2040750926]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
-script = ExtResource("1_8s8hj")
+[node name="Fast spinning thingy" type="Node3D" unique_id=2040750926]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+script = ExtResource("1_o3ep8")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=569271759]
 use_collision = true
@@ -86,5 +62,5 @@ use_collision = true
 speed_scale = 0.25
 libraries/ = SubResource("AnimationLibrary_o3ep8")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=591502567]
-replication_config = SubResource("SceneReplicationConfig_8s8hj")
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=548081678]
+replication_config = SubResource("SceneReplicationConfig_o3ep8")

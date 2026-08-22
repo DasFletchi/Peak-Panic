@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bqndtmbe42vyi"]
+[gd_scene format=3 uid="uid://bhduy1ibt1vcq"]
 
-[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_8s8hj"]
+[ext_resource type="Script" uid="uid://dis47dsh0oren" path="res://scripts/spinning_block.gd" id="1_26jr0"]
 
 [sub_resource type="Animation" id="Animation_o3ep8"]
 length = 0.001
@@ -31,11 +31,11 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_ttdag"]
 resource_name = "spin"
-length = 16.0
+length = 4.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
-tracks/0/enabled = true
+tracks/0/enabled = false
 tracks/0/path = NodePath("CSGBox3D:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
@@ -55,7 +55,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 2, 4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(5, 0, 0), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0, 6, 0), Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_o3ep8"]
@@ -64,20 +64,20 @@ _data = {
 &"spin": SubResource("Animation_ttdag")
 }
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8s8hj"]
-properties/0/path = NodePath("CSGBox3D:position")
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_26jr0"]
+properties/0/path = NodePath("CSGBox3D:rotation")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath("CSGBox3D:rotation")
+properties/1/path = NodePath("CSGBox3D:position")
 properties/1/spawn = true
 properties/1/replication_mode = 1
 properties/2/path = NodePath(".:position")
 properties/2/spawn = true
 properties/2/replication_mode = 0
 
-[node name="Moving thingy" type="Node3D" unique_id=2040750926]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
-script = ExtResource("1_8s8hj")
+[node name="Vertical moving thingy" type="Node3D" unique_id=2040750926]
+transform = Transform3D(4, 0, 0, 0, 2, 0, 0, 0, 4, 0, 0, 0)
+script = ExtResource("1_26jr0")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=569271759]
 use_collision = true
@@ -86,5 +86,5 @@ use_collision = true
 speed_scale = 0.25
 libraries/ = SubResource("AnimationLibrary_o3ep8")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=591502567]
-replication_config = SubResource("SceneReplicationConfig_8s8hj")
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1142404368]
+replication_config = SubResource("SceneReplicationConfig_26jr0")

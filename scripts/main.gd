@@ -17,8 +17,11 @@ var seed_value := 0
 var spinning_block = preload("res://scenes/spinning_block.tscn")
 var moving_spinning_block = preload("res://scenes/moving_spinning_block.tscn")
 var moving_block = preload("res://scenes/moving_block.tscn")
+var large_moving_block = preload("res://scenes/large_moving_block.tscn")
+var fast_spinning_block = preload("res://scenes/fast_spinning_block.tscn")
+var vertical_moving_block = preload("res://scenes/vertical_moving_block.tscn")
 
-@export var number_of_plattforms_in_the_script = 3
+@export var number_of_plattforms_in_the_script = 6
 
 @onready var plattform_spawner_manager: Node = $PlattformSpawnerManager
 
@@ -167,6 +170,12 @@ func generate_plattform():
 		plattform_scene = moving_block.instantiate()
 	elif chosen_plattform == 3:
 		plattform_scene = moving_spinning_block.instantiate()
+	elif chosen_plattform == 4:
+		plattform_scene = large_moving_block.instantiate()
+	elif chosen_plattform == 5:
+		plattform_scene = fast_spinning_block.instantiate()
+	elif chosen_plattform == 6:
+		plattform_scene = vertical_moving_block.instantiate()
 
 	plattform_scene.position = Vector3(x, y, z)
 	plattform_scene.name = "Platform_" + str(plattform_amount)

@@ -89,7 +89,7 @@ _spawnable_scenes = PackedStringArray("uid://dranyd23io7tw")
 spawn_path = NodePath("..")
 
 [node name="MultiplayerPlattformSpawner" type="MultiplayerSpawner" parent="." unique_id=1052918489]
-_spawnable_scenes = PackedStringArray("uid://sit562i22d73", "uid://bqndtmbe42vyi", "uid://d133bcdxmyhx")
+_spawnable_scenes = PackedStringArray("uid://sit562i22d73", "uid://bqndtmbe42vyi", "uid://d133bcdxmyhx", "uid://hmk3pfxm0grh", "uid://c6afmbkuge0hf", "uid://bhduy1ibt1vcq")
 spawn_path = NodePath("../PlattformSpawnerManager")
 
 [node name="PlattformSpawnerManager" type="Node" parent="." unique_id=841895833]
