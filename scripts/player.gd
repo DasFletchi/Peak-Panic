@@ -249,9 +249,11 @@ func die() -> void:
 		die_rpc.rpc()
 	else:
 		_handle_death()
-	dead_pop_up.show()
-	await get_tree().create_timer(3.0).timeout
-	dead_pop_up.hide()
+	if dead_pop_up and is_instance_valid(dead_pop_up):
+		dead_pop_up.show()
+		await get_tree().create_timer(3.0).timeout
+		if is_instance_valid(dead_pop_up):
+			dead_pop_up.hide()
 
 @rpc("any_peer", "call_local", "reliable")
 func die_rpc() -> void:
@@ -309,30 +311,67 @@ func _handle_death() -> void:
 		peer_id = multiplayer.get_unique_id()
 	player_eliminated.emit(peer_id)
 
-func respawn() -> void:
+func respawn(spawn_pos: Vector3 = Vector3.ZERO) -> void:
+	if spawn_pos == Vector3.ZERO:
+		spawn_pos = Vector3(0.0, 1.8, 3.0)
+	_handle_respawn(spawn_pos)
+
+@rpc("any_peer", "call_local", "reliable")
+func respawn_rpc(spawn_pos: Vector3 = Vector3(0.0, 1.8, 3.0)) -> void:
+	_handle_respawn(spawn_pos)
+
+func _handle_respawn(spawn_pos: Vector3) -> void:
 	is_dead = false
 	is_spectator = false
-	global_position = Vector3(0, 5.0, 0)
+	has_won = false
+	global_position = spawn_pos
 	velocity = Vector3.ZERO
+	coyote_timer = 0.0
+	jump_buffer_timer = 0.0
+	ledges_left = 1
+	legding_rn = false
+
 	if collision_shape_3d:
 		collision_shape_3d.set_deferred("disabled", false)
+
+	if dead_pop_up:
+		dead_pop_up.hide()
+	if won_pop_up:
+		won_pop_up.hide()
+
 	if is_multiplayer_authority():
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		if hands:
 			hands.show()
 		if spectator_hud:
 			spectator_hud.hide()
+		if bean_visual:
+			bean_visual.hide()
+		if camera:
+			camera.rotation.x = 0.0
 	else:
 		if bean_visual:
 			bean_visual.show()
+		if hands:
+			hands.hide()
+
 	if gamertag:
 		gamertag.show()
-	remove_from_group("spectators")
-	add_to_group("alive_players")
+
+	if is_in_group("spectators"):
+		remove_from_group("spectators")
+	if not is_in_group("alive_players"):
+		add_to_group("alive_players")
+
 	var particles = get_node_or_null("GPUParticles3D") as GPUParticles3D
 	if particles:
 		particles.emitting = false
-		can_move = false
+	if win_particles_green:
+		win_particles_green.emitting = false
+	if win_particles_blue:
+		win_particles_blue.emitting = false
+
+	if animation_player:
+		animation_player.play("RESET")
 
 func _apply_visuals() -> void:
 	if bean_visual == null:

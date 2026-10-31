@@ -41,9 +41,11 @@ var is_game_over: bool = false
  
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	reset_lava()
 	await Noray.connect_to_host(NORAY_HOST, NORAY_PORT)
 	print("[MultiplayerManager] Connected to Noray relay")
-	multiplayer.server_disconnected.connect(_server_disconnected)
+	if not multiplayer.server_disconnected.is_connected(_server_disconnected):
+		multiplayer.server_disconnected.connect(_server_disconnected)
 
 func _show_lobby_view(as_host: bool) -> void:
 	if lobby_ui:
@@ -71,6 +73,11 @@ func _update_lobby_player_count() -> void:
 
 func _on_host_pressed() -> void:
 	is_host = true
+	is_round_started = false
+	is_game_over = false
+	stop_lava()
+	reset_lava()
+	enet_peer = ENetMultiplayerPeer.new()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 	_show_lobby_view(true)
@@ -94,12 +101,16 @@ func _on_host_pressed() -> void:
 	enet_peer.create_server(Noray.local_port)
 	multiplayer.multiplayer_peer = enet_peer
 
-	Noray.on_connect_nat.connect(nat_connect)
-	Noray.on_connect_relay.connect(relay_connect)
+	if not Noray.on_connect_nat.is_connected(nat_connect):
+		Noray.on_connect_nat.connect(nat_connect)
+	if not Noray.on_connect_relay.is_connected(relay_connect):
+		Noray.on_connect_relay.connect(relay_connect)
 
 	add_player(multiplayer.get_unique_id())
-	multiplayer.peer_connected.connect(_on_peer_connected)
-	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	if not multiplayer.peer_connected.is_connected(_on_peer_connected):
+		multiplayer.peer_connected.connect(_on_peer_connected)
+	if not multiplayer.peer_disconnected.is_connected(_on_peer_disconnected):
+		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 	if lobby_status_label:
 		lobby_status_label.text = "Lobby active! Code copied to clipboard."
@@ -114,6 +125,11 @@ func _on_join_pressed() -> void:
 		return
 
 	is_host = false
+	is_round_started = false
+	is_game_over = false
+	stop_lava()
+	reset_lava()
+	enet_peer = ENetMultiplayerPeer.new()
 	current_room_code = host_oid
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -123,15 +139,19 @@ func _on_join_pressed() -> void:
 	if lobby_code_label:
 		lobby_code_label.text = host_oid
 
-	multiplayer.peer_connected.connect(_on_peer_connected)
-	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	if not multiplayer.peer_connected.is_connected(_on_peer_connected):
+		multiplayer.peer_connected.connect(_on_peer_connected)
+	if not multiplayer.peer_disconnected.is_connected(_on_peer_disconnected):
+		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 	Noray.register_host()
 	await Noray.on_pid
 	await Noray.register_remote()
 
-	Noray.on_connect_nat.connect(join)
-	Noray.on_connect_relay.connect(join)
+	if not Noray.on_connect_nat.is_connected(join):
+		Noray.on_connect_nat.connect(join)
+	if not Noray.on_connect_relay.is_connected(join):
+		Noray.on_connect_relay.connect(join)
 	Noray.connect_nat(host_oid)
 
 func _on_copy_code_pressed() -> void:
@@ -157,13 +177,20 @@ func _on_leave_lobby_pressed() -> void:
 	if multiplayer.has_multiplayer_peer():
 		multiplayer.multiplayer_peer.close()
 		multiplayer.multiplayer_peer = null
+	enet_peer = ENetMultiplayerPeer.new()
 	is_round_started = false
+	is_game_over = false
 	is_host = false
 	current_room_code = ""
+
+	stop_lava()
+	reset_lava()
 
 	for p in get_tree().get_nodes_in_group("player"):
 		p.queue_free()
 
+	if game_over_ui:
+		game_over_ui.hide()
 	if lobby_box:
 		lobby_box.hide()
 	if main_box:
@@ -171,9 +198,12 @@ func _on_leave_lobby_pressed() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _on_back_pressed() -> void:
+	stop_lava()
+	reset_lava()
 	if multiplayer.has_multiplayer_peer():
 		multiplayer.multiplayer_peer.close()
 		multiplayer.multiplayer_peer = null
+	enet_peer = ENetMultiplayerPeer.new()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
 
@@ -305,29 +335,56 @@ func start_game_round() -> void:
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-	for p in get_tree().get_nodes_in_group("player"):
-		p.can_move = true
-
+	reset_lava()
 	if auto_start_lava:
 		start_lava()
 
-	round_started.emit()
-	print("[MultiplayerManager] Round started! All players unlocked.")
+	var spawn_pos = get_spawn_pos()
+	for p in get_tree().get_nodes_in_group("player"):
+		p.respawn(spawn_pos)
+		p.can_move = true
 
-@rpc("authority", "call_local", "reliable")
+	round_started.emit()
+	print("[MultiplayerManager] Round started! All players unlocked and respawned.")
+
 func start_lava() -> void:
+	_execute_start_lava()
+	if multiplayer.has_multiplayer_peer() and multiplayer.is_server():
+		_sync_start_lava.rpc()
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_start_lava() -> void:
+	_execute_start_lava()
+
+func _execute_start_lava() -> void:
 	var lava = _find_lava()
 	if lava and lava.has_method("start_rising"):
 		lava.start_rising()
 
-@rpc("authority", "call_local", "reliable")
 func stop_lava() -> void:
+	_execute_stop_lava()
+	if multiplayer.has_multiplayer_peer() and multiplayer.is_server():
+		_sync_stop_lava.rpc()
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_stop_lava() -> void:
+	_execute_stop_lava()
+
+func _execute_stop_lava() -> void:
 	var lava = _find_lava()
 	if lava and lava.has_method("stop_rising"):
 		lava.stop_rising()
 
-@rpc("authority", "call_local", "reliable")
 func reset_lava() -> void:
+	_execute_reset_lava()
+	if multiplayer.has_multiplayer_peer() and multiplayer.is_server():
+		_sync_reset_lava.rpc()
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_reset_lava() -> void:
+	_execute_reset_lava()
+
+func _execute_reset_lava() -> void:
 	var lava = _find_lava()
 	if lava and lava.has_method("reset_lava"):
 		lava.reset_lava()
@@ -360,9 +417,14 @@ func start_round_over_countdown() -> void:
 
 	# 5 Sekunden Countdown auf dem Bildschirm (nur Timer auf Englisch)
 	for i in range(5, 0, -1):
-		if game_over_label:
+		if not is_game_over or not is_inside_tree():
+			return
+		if game_over_label and is_instance_valid(game_over_label):
 			game_over_label.text = "Returning to lobby in %d..." % i
 		await get_tree().create_timer(1.0).timeout
+
+	if not is_game_over or not is_inside_tree():
+		return
 
 	# Nach Ablauf der 5 Sekunden: Hauptmenü aufrufen
 	_return_to_main_menu()
@@ -370,15 +432,16 @@ func start_round_over_countdown() -> void:
 func _return_to_main_menu() -> void:
 	is_round_started = false
 	is_game_over = false
+	stop_lava()
 	reset_lava()
-	if multiplayer.is_server():
-		_show_lobby_view(is_host)
-	else:
-		_show_lobby_view(is_host)
-		for player in get_tree().get_nodes_in_group("player"): #wie eine fernbedieunnug führt auf jedem player das da aus
-			player.respawn()
-			game_over_ui.hide()
-
+	if game_over_ui:
+		game_over_ui.hide()
+	_show_lobby_view(is_host)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	var spawn_pos = get_spawn_pos()
+	for player in get_tree().get_nodes_in_group("player"):
+		player.respawn(spawn_pos)
+		player.can_move = false
 
 func _server_disconnected():
 	if multiplayer.server_disconnected:
