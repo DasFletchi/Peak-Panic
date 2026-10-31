@@ -76,3 +76,4 @@ Now just hook em up to the title screen, like all the other levels :3 (automatic
 
 
 [itch io](https://dasfletchi.itch.io/lava-is-the-floor)everything but grinding flux and devlogs fr 😔
+last bugfix with was done by agy (ai) same as the lava (in its entirety) im not bothering myself with gdshaders anytime soon, and the rest of the lava is just boiler plate with a few fancy api's
